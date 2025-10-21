@@ -2,6 +2,9 @@ const String CLOSED = "Closed";
 const String OPEN = "Open";
 String chestState = CLOSED;
 
+// Define the distance in cm used to determine whether the chest should be closed or open
+const int LIMIT_DISTANCE = 15;
+
 // Define the pins for the ultrasonic sensor
 const int trigPin = 12;
 const int echoPin = 14;
@@ -25,6 +28,7 @@ void setUpUltrasonicSensor() {
 
 void loop() {
   updateDistanceToObjectOrPerson();
+  updateChestState();
 }
 
 void updateDistanceToObjectOrPerson() {
@@ -48,4 +52,23 @@ void updateDistanceToObjectOrPerson() {
   Serial.println(distance);
 
   delay(1000);
+}
+
+void updateChestState() {
+  if (distance <= LIMIT_DISTANCE && chestState == CLOSED) {
+    // TODO: Open chest
+    
+    // TODO: Switch on the LEDs
+
+    chestState = OPEN;
+  } else if (distance > LIMIT_DISTANCE && chestState == OPEN) {
+    // TODO: Close chest
+
+    // TODO: Switch off the LEDs
+    
+    chestState = CLOSED;
+  }
+
+  Serial.print("Chest state: ");
+  Serial.println(chestState);
 }
