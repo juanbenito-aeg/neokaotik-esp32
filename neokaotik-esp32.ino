@@ -1,3 +1,7 @@
+const String CLOSED = "Closed";
+const String OPEN = "Open";
+String chestState = CLOSED;
+
 // Define the pins for the ultrasonic sensor
 const int trigPin = 12;
 const int echoPin = 14;
