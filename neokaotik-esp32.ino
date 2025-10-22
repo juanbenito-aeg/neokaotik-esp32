@@ -8,6 +8,9 @@ String chestState = CLOSED;
 // Define the distance in cm used to determine whether the chest should be closed or open
 const int LIMIT_DISTANCE = 15;
 
+// Define the pin that powers the LEDs
+const int LED_PIN = 23;
+
 // Define the servo and the pin it is connected to
 Servo myServo;
 const int servoPin = 13;
@@ -24,6 +27,7 @@ float distance; // Saves the distance to an object/person in centimeters
 
 void setup() {
   Serial.begin(115200); // Starts the serial communication
+  setUpLED();
   setUpServo();
   setUpUltrasonicSensor();
 }
@@ -31,6 +35,10 @@ void setup() {
 void setUpServo() {
   // Tell the servo library which pin it is connected to
   myServo.attach(servoPin);
+}
+
+void setUpLED() {
+  pinMode(LED_PIN, OUTPUT); // Sets the LED pin as an Ouput
 }
 
 void setUpUltrasonicSensor() {
@@ -70,13 +78,13 @@ void updateChestState() {
   if (distance <= LIMIT_DISTANCE && chestState == CLOSED) {
     myServo.write(90);
     
-    // TODO: Switch on the LEDs
+    digitalWrite(LED_PIN, HIGH);
 
     chestState = OPEN;
   } else if (distance > LIMIT_DISTANCE && chestState == OPEN) {
     myServo.write(0);
 
-    // TODO: Switch off the LEDs
+    digitalWrite(LED_PIN, LOW);
     
     chestState = CLOSED;
   }
