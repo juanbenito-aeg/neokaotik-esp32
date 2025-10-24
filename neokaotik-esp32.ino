@@ -33,6 +33,9 @@ void setup() {
 }
 
 void setUpServo() {
+  // Stop the servo from automatically moving right after the ESP32 is powered
+  myServo.write(0);
+
   // Tell the servo library which pin it is connected to
   myServo.attach(servoPin);
 }
