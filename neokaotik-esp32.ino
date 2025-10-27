@@ -79,16 +79,24 @@ void updateDistanceToObjectOrPerson() {
 
 void updateChestState() {
   if (distance <= LIMIT_DISTANCE && chestState == CLOSED) {
-    myServo.write(90);
-    
     digitalWrite(LED_PIN, HIGH);
+
+    // Open the chest
+    for (int pos = 0; pos <= 90; pos += 1) {
+      myServo.write(pos);
+      delay(0.01); 
+    }
 
     chestState = OPEN;
   } else if (distance > LIMIT_DISTANCE && chestState == OPEN) {
-    myServo.write(0);
+    // Close the chest
+    for (int pos = 90; pos >= 0; pos -= 1) {
+      myServo.write(pos);
+      delay(0.01); 
+    }
 
     digitalWrite(LED_PIN, LOW);
-    
+
     chestState = CLOSED;
   }
 
