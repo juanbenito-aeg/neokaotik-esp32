@@ -1,9 +1,7 @@
-const String CLOSED = "Closed";
-const String OPEN = "Open";
-String chestState = CLOSED;
+bool isAuthenticated = false;
 
 // Define the distance in cm used to determine whether the chest should be closed or open
-const int LIMIT_DISTANCE = 15;
+const int LIMIT_DISTANCE = 5;
 
 // Define the pin that powers the LEDs
 const int LED_PIN = 23;
@@ -20,12 +18,12 @@ float distance; // Saves the distance to an object/person in centimeters
 
 void setup() {
   Serial.begin(115200); // Starts the serial communication
-  setUpLED();
+  setUpLEDs();
   setUpUltrasonicSensor();
 }
 
-void setUpLED() {
-  pinMode(LED_PIN, OUTPUT); // Sets the LED pin as an Ouput
+void setUpLEDs() {
+  pinMode(LED_PIN, OUTPUT); // Sets the LEDs pin as an Ouput
 }
 
 void setUpUltrasonicSensor() {
@@ -35,7 +33,7 @@ void setUpUltrasonicSensor() {
 
 void loop() {
   updateDistanceToObjectOrPerson();
-  updateChestState();
+  updateIsAuthenticated();
 }
 
 void updateDistanceToObjectOrPerson() {
@@ -61,19 +59,17 @@ void updateDistanceToObjectOrPerson() {
   delay(1000);
 }
 
-void updateChestState() {
-  if (distance <= LIMIT_DISTANCE && chestState == CLOSED) {
-    
+void updateIsAuthenticated() {
+  if (distance <= LIMIT_DISTANCE && !isAuthenticated) {
     digitalWrite(LED_PIN, HIGH);
 
-    chestState = OPEN;
-  } else if (distance > LIMIT_DISTANCE && chestState == OPEN) {
-
+    isAuthenticated = true;
+  } else if (distance > LIMIT_DISTANCE && isAuthenticated) {
     digitalWrite(LED_PIN, LOW);
     
-    chestState = CLOSED;
+    isAuthenticated = false;
   }
 
-  Serial.print("Chest state: ");
-  Serial.println(chestState);
+  Serial.print("User is authenticated: ");
+  Serial.println(isAuthenticated);
 }
