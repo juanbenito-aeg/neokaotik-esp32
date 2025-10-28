@@ -7,7 +7,7 @@ const int LIMIT_DISTANCE = 5;
 const int LED_PIN = 23;
 
 // Define the pins for the laser & its sensor
-const int laserPin = 34;
+const int laserPin = 32;
 const int laserSensorPin = 35;
 
 // Define the pin for the buzzer
@@ -40,7 +40,7 @@ void setUpLaserAndSensor() {
   pinMode(laserSensorPin, INPUT); // Sets the laserSensorPin as an Input
   
   // Turn the laser on
-  // digitalWrite(laserPin, HIGH);
+  digitalWrite(laserPin, HIGH);
 }
 
 void setUpBuzzer() {
@@ -54,7 +54,7 @@ void setUpUltrasonicSensor() {
 
 void loop() {
   updateDistanceToObjectOrPerson();
-  updateLEDsStateAndIsAuthenticated();
+  updateComponentsStateAndIsAuthenticated();
   updateBuzzer();
 }
 
@@ -81,13 +81,19 @@ void updateDistanceToObjectOrPerson() {
   delay(1000);
 }
 
-void updateLEDsStateAndIsAuthenticated() {
+void updateComponentsStateAndIsAuthenticated() {
   if (distance <= LIMIT_DISTANCE && !isAuthenticated) {
     digitalWrite(LED_PIN, HIGH);
+
+    // Turn the laser off
+    digitalWrite(laserPin, LOW);
     
     isAuthenticated = true;
   } else if (distance > LIMIT_DISTANCE && isAuthenticated) {
     digitalWrite(LED_PIN, LOW);
+
+    // Turn the laser on
+    digitalWrite(laserPin, HIGH);
     
     isAuthenticated = false;
   }
