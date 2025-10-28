@@ -1,6 +1,3 @@
-// Include the Servo library
-#include <ESP32Servo.h>
-
 const String CLOSED = "Closed";
 const String OPEN = "Open";
 String chestState = CLOSED;
@@ -10,10 +7,6 @@ const int LIMIT_DISTANCE = 15;
 
 // Define the pin that powers the LEDs
 const int LED_PIN = 23;
-
-// Define the servo and the pin it is connected to
-Servo myServo;
-const int servoPin = 13;
 
 // Define the pins for the ultrasonic sensor
 const int trigPin = 12;
@@ -28,16 +21,7 @@ float distance; // Saves the distance to an object/person in centimeters
 void setup() {
   Serial.begin(115200); // Starts the serial communication
   setUpLED();
-  setUpServo();
   setUpUltrasonicSensor();
-}
-
-void setUpServo() {
-  // Stop the servo from automatically moving right after the ESP32 is powered
-  myServo.write(0);
-
-  // Tell the servo library which pin it is connected to
-  myServo.attach(servoPin);
 }
 
 void setUpLED() {
@@ -79,24 +63,14 @@ void updateDistanceToObjectOrPerson() {
 
 void updateChestState() {
   if (distance <= LIMIT_DISTANCE && chestState == CLOSED) {
+    
     digitalWrite(LED_PIN, HIGH);
-
-    // Open the chest
-    for (int pos = 0; pos <= 90; pos += 1) {
-      myServo.write(pos);
-      delay(0.01); 
-    }
 
     chestState = OPEN;
   } else if (distance > LIMIT_DISTANCE && chestState == OPEN) {
-    // Close the chest
-    for (int pos = 90; pos >= 0; pos -= 1) {
-      myServo.write(pos);
-      delay(0.01); 
-    }
 
     digitalWrite(LED_PIN, LOW);
-
+    
     chestState = CLOSED;
   }
 
