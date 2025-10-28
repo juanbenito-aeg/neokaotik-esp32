@@ -6,6 +6,13 @@ const int LIMIT_DISTANCE = 5;
 // Define the pin that powers the LEDs
 const int LED_PIN = 23;
 
+// Define the pins for the laser & its sensor
+const int laserPin = 34;
+const int laserSensorPin = 35;
+
+// Define the pin for the buzzer
+const int buzzerPin = 22;
+
 // Define the pins for the ultrasonic sensor
 const int trigPin = 12;
 const int echoPin = 14;
@@ -19,11 +26,25 @@ float distance; // Saves the distance to an object/person in centimeters
 void setup() {
   Serial.begin(115200); // Starts the serial communication
   setUpLEDs();
+  setUpLaserAndSensor();
+  setUpBuzzer();
   setUpUltrasonicSensor();
 }
 
 void setUpLEDs() {
   pinMode(LED_PIN, OUTPUT); // Sets the LEDs pin as an Ouput
+}
+
+void setUpLaserAndSensor() {
+  pinMode(laserPin, OUTPUT); // Sets the laserPin as an Output
+  pinMode(laserSensorPin, INPUT); // Sets the laserSensorPin as an Input
+  
+  // Turn the laser on
+  // digitalWrite(laserPin, HIGH);
+}
+
+void setUpBuzzer() {
+  pinMode(buzzerPin, OUTPUT); // Sets the buzzer pin as an Ouput
 }
 
 void setUpUltrasonicSensor() {
@@ -33,7 +54,8 @@ void setUpUltrasonicSensor() {
 
 void loop() {
   updateDistanceToObjectOrPerson();
-  updateIsAuthenticated();
+  updateLEDsStateAndIsAuthenticated();
+  updateBuzzer();
 }
 
 void updateDistanceToObjectOrPerson() {
@@ -59,10 +81,10 @@ void updateDistanceToObjectOrPerson() {
   delay(1000);
 }
 
-void updateIsAuthenticated() {
+void updateLEDsStateAndIsAuthenticated() {
   if (distance <= LIMIT_DISTANCE && !isAuthenticated) {
     digitalWrite(LED_PIN, HIGH);
-
+    
     isAuthenticated = true;
   } else if (distance > LIMIT_DISTANCE && isAuthenticated) {
     digitalWrite(LED_PIN, LOW);
@@ -72,4 +94,14 @@ void updateIsAuthenticated() {
 
   Serial.print("User is authenticated: ");
   Serial.println(isAuthenticated);
+}
+
+void updateBuzzer() {
+  bool laserSensorValue = digitalRead(laserSensorPin);
+
+  if (!isAuthenticated && laserSensorValue == 0) {
+    digitalWrite(buzzerPin, HIGH);
+  } else {
+    digitalWrite(buzzerPin, LOW);
+  } 
 }
