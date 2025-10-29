@@ -1,7 +1,7 @@
 bool isAuthenticated = false;
 
 // Define the distance in cm used to determine whether the chest should be closed or open
-const int LIMIT_DISTANCE = 5;
+const int LIMIT_DISTANCE = 10;
 
 // Define the pin that powers the LEDs
 const int LED_PIN = 23;
@@ -78,7 +78,8 @@ void updateDistanceToObjectOrPerson() {
   Serial.print("Distance in cm: " );
   Serial.println(distance);
 
-  delay(1000);
+  // Used to easily check the involved variables' values
+  // delay(1000);
 }
 
 void updateComponentsStateAndIsAuthenticated() {
